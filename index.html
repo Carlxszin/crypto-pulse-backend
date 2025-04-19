@@ -4,16 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CryptoPulse</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400 |500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* CSS permanece inalterado */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: #0e0e10; color: #f0f0f0; line-height: 1.5; }
     
     header { 
       background: linear-gradient(90deg, #8b5cf6, #3b82f6, #06b6d4); 
-      padding صادر: 20px; 
+      padding: 20px; 
       text-align: center; 
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       position: relative;
@@ -279,10 +278,9 @@
     © 2025 CryptoPulse | Dados: CoinMarketCap, CoinGecko
   </footer>
   <script>
-    // ATENÇÃO: A chave da API está exposta! Mova para um backend (veja instruções abaixo).
-    const cmcApiKey = "9e0ef985-caf5-43d3-90e0-a73304b5546e";
-    const cmcApiUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=5000&convert=BRL';
-    const cgApiUrl = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&per_page=250&page=';
+    // URLs do proxy Vercel
+    const cmcApiUrl = 'https://crypto-pulse-backend-git-main-carlxszins-projects.vercel.app/cmc/listings';
+    const cgApiUrl = 'https://crypto-pulse-backend-git-main-carlxszins-projects.vercel.app/cg/markets?page=';
     let cryptoData = [];
     let filteredData = [];
     let currentPage = 1;
@@ -371,13 +369,13 @@
       return data;
     }
 
-    // Função para buscar dados do CoinMarketCap
+    // Função para buscar dados do CoinMarketCap via Vercel
     async function fetchCmcData() {
       try {
-        const res = await fetch(cmcApiUrl, { headers: { "X-CMC_PRO_API_KEY": cmcApiKey } });
+        const res = await fetch(cmcApiUrl);
         if (!res.ok) throw new Error(`Erro na API CoinMarketCap: ${res.status} ${res.statusText}`);
         const data = await res.json();
-        if (data.status.error_code !== 0) throw new Error(`Erro da API: ${data.status.error_message}`);
+        if (data.status && data.status.error_code !== 0) throw new Error(`Erro da API: ${data.status.error_message}`);
         console.log('Dados CoinMarketCap recebidos:', data.data);
         return data.data.map(coin => ({
           id: `coinmarketcap-${coin.id}`,
@@ -394,7 +392,7 @@
       }
     }
 
-    // Função para buscar dados do CoinGecko
+    // Função para buscar dados do CoinGecko via Vercel
     async function fetchCgData() {
       let allCoins = [];
       let page = 1;
@@ -436,15 +434,18 @@
       const uncachedCoins = coins.filter(coin => !contractCache[coin.id]);
       if (uncachedCoins.length === 0) return;
       try {
-        const cmcIds = uncachedCoins.filter(coin => coin.id.startsWith('coinmarketcap')).map(coin => coin.id.split('-')[1]).join(',');
-        if (cmcIds) {
-          const res = await fetch(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?id=${cmcIds}`, { headers: { "X-CMC_PRO_API_KEY": cmcApiKey } });
+        const cmcCoins = uncachedCoins.filter(coin => coin.id.startsWith('coinmarketcap'));
+        if (cmcCoins.length > 0) {
+          const cmcIds = cmcCoins.map(coin => coin.id.split('-')[1]).join(',');
+          const res = await fetch(`https://crypto-pulse-backend-git-main-carlxszins-projects.vercel.app/cmc/info?id=${cmcIds}`);
           if (res.ok) {
             const data = await res.json();
             Object.entries(data.data).forEach(([id, info]) => {
               const contract = info.platform ? info.platform.token_address : null;
               contractCache[`coinmarketcap-${id}`] = contract;
             });
+          } else {
+            console.warn(`Erro ao buscar contratos no CoinMarketCap: ${res.status}`);
           }
         }
       } catch (err) {
@@ -602,7 +603,7 @@
         let coinInfo = {};
         if (coinId.startsWith('coinmarketcap')) {
           const cmcId = coinId.split('-')[1];
-          const res = await fetch(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?id=${cmcId}`, { headers: { "X-CMC_PRO_API_KEY": cmcApiKey } });
+          const res = await fetch(`https://crypto-pulse-backend-git-main-carlxszins-projects.vercel.app/cmc/info?id=${cmcId}`);
           if (!res.ok) throw new Error(`Erro ao buscar detalhes: ${res.status}`);
           coinInfo = (await res.json()).data[cmcId];
         } else {
