@@ -279,8 +279,8 @@
   </footer>
   <script>
     // URLs do proxy Vercel
-    const cmcApiUrl = 'https://crypto-pulse-backend-git-main-carlxszins-projects.vercel.app/cmc/listings';
-    const cgApiUrl = 'https://crypto-pulse-backend-git-main-carlxszins-projects.vercel.app/cg/markets?page=';
+    const cmcApiUrl = 'https://cripto-pulse-backend.vercel.app/cmc/listings';
+    const cgApiUrl = 'https://cripto-pulse-backend.vercel.app/cg/markets?page=';
     let cryptoData = [];
     let filteredData = [];
     let currentPage = 1;
@@ -437,7 +437,7 @@
         const cmcCoins = uncachedCoins.filter(coin => coin.id.startsWith('coinmarketcap'));
         if (cmcCoins.length > 0) {
           const cmcIds = cmcCoins.map(coin => coin.id.split('-')[1]).join(',');
-          const res = await fetch(`https://crypto-pulse-backend-git-main-carlxszins-projects.vercel.app/cmc/info?id=${cmcIds}`);
+          const res = await fetch(`https://cripto-pulse-backend.vercel.app/cmc/info?id=${cmcIds}`);
           if (res.ok) {
             const data = await res.json();
             Object.entries(data.data).forEach(([id, info]) => {
@@ -603,7 +603,7 @@
         let coinInfo = {};
         if (coinId.startsWith('coinmarketcap')) {
           const cmcId = coinId.split('-')[1];
-          const res = await fetch(`https://crypto-pulse-backend-git-main-carlxszins-projects.vercel.app/cmc/info?id=${cmcId}`);
+          const res = await fetch(`https://cripto-pulse-backend.vercel.app/cmc/info?id=${cmcId}`);
           if (!res.ok) throw new Error(`Erro ao buscar detalhes: ${res.status}`);
           coinInfo = (await res.json()).data[cmcId];
         } else {
