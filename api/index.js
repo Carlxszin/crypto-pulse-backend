@@ -1,48 +1,51 @@
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-const CMC_API_KEY = process.env.CMC_API_KEY || 'sua-chave-de-fallback'; // Substitua pela chave real apenas para testes locais
+const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY || 'sua-chave-de-fallback';
 
-// Rota para listar criptomoedas (CoinMarketCap)
-app.get('/cmc/listings', async (req, res) => {
+// Rota para listar criptomoedas (CryptoCompare)
+app.get('/cc/listings', async (req, res) => {
   try {
-    const response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', {
-      headers: { 'X-CMC_PRO_API_KEY': CMC_API_KEY },
+    const response = await axios.get('https://min-api.cryptocompare.com/data/top/mktcapfull', {
       params: {
-        limit: 5000, // Ajuste conforme necessário
-        convert: 'BRL' // Preços em reais
+        limit: 100,
+        tsym: 'BRL',
+        api_key: CRYPTOCOMPARE_API_KEY
       }
     });
     res.json(response.data);
   } catch (error) {
-    console.error('Erro na rota /cmc/listings:', error.message);
+    console.error('Erro na rota /cc/listings:', error.message);
     res.status(error.response?.status || 500).json({ error: error.message });
   }
 });
 
-// Rota para detalhes de uma moeda (CoinMarketCap)
-app.get('/cmc/info', async (req, res) => {
+// Rota para detalhes de uma moeda (CryptoCompare)
+app.get('/cc/info', async (req, res) => {
   try {
-    const { id } = req.query;
-    if (!id) {
-      return res.status(400).json({ error: 'Parâmetro "id" é obrigatório' });
-    }
-    const response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/info', {
-      headers: { 'X-CMC_PRO_API_KEY': CMC_API_KEY },
-      params: { id }
+    const { fsym } = req.query;
+    if (!fsym) return res.status(400).json({ error: 'Parâmetro "fsym" é obrigatório' });
+    const response = await axios.get('https://min-api.cryptocompare.com/data/coin/generalinfo', {
+      params: {
+        fsyms: fsym,
+        tsym: 'BRL',
+        api_key: CRYPTOCOMPARE_API_KEY
+      }
     });
     res.json(response.data);
   } catch (error) {
-    console.error('Erro na rota /cmc/info:', error.message);
+    console.error('Erro na rota /cc/info:', error.message);
     res.status(error.response?.status || 500).json({ error: error.message });
   }
 });
 
-// Rota para dados de mercado (CoinGecko)
+// Rota para dados de mercado (CoinGecko, mantido como fallback)
 app.get('/cg/markets', async (req, res) => {
   try {
     const { page = 1 } = req.query;
@@ -61,5 +64,4 @@ app.get('/cg/markets', async (req, res) => {
   }
 });
 
-// Exporta o app para o Vercel
 module.exports = app;
