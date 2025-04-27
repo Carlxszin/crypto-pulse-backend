@@ -342,16 +342,16 @@
 
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="#">Poderosas Cripto</a>
+            <a class="navbar-brand" href="/">Poderosas Cripto</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Meme Coins</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Notícias</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Comunidade</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#meme-coins">Meme Coins</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#news">Notícias</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#x-feed">Comunidade</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Ferramentas</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin">Admin</a></li>
                 </ul>
@@ -363,14 +363,14 @@
         <div class="container">
             <h1>Poderosas Cripto</h1>
             <p>Meme coins com o poder de Florzinha, Lindinha e Docinho! 🚀</p>
-            <a href="#" class="btn" aria-label="Explorar Meme Coins"><i class="fa-solid fa-star"></i> Explorar</a>
+            <a href="#meme-coins" class="btn" aria-label="Explorar Meme Coins"><i class="fa-solid fa-star"></i> Explorar</a>
         </div>
     </section>
 
-    <section class="swiper-section container">
+    <section class="swiper-section container" id="meme-coins">
         <h2 class="text-center mb-4">Meme Coins Superpoderosas</h2>
         <div class="swiper mySwiper">
-            <div class="swiper-wrapper" id="meme-coins"></div>
+            <div class="swiper-wrapper" id="meme-coins-list"></div>
             <div class="swiper-pagination"></div>
         </div>
     </section>
@@ -384,12 +384,12 @@
         </ul>
     </section>
 
-    <section class="news-section container">
+    <section class="news-section container" id="news">
         <h2 class="text-center mb-4">Notícias Superpoderosas</h2>
-        <div class="row" id="news"></div>
+        <div class="row" id="news-list"></div>
     </section>
 
-    <section class="x-feed container">
+    <section class="x-feed container" id="x-feed">
         <h2 class="text-center mb-4">No X #PoderosasCripto</h2>
         <div id="x-posts"></div>
     </section>
@@ -418,7 +418,7 @@
             try {
                 const response = await fetch('/api/meme-coins');
                 const memeCoins = await response.json();
-                const container = document.getElementById('meme-coins');
+                const container = document.getElementById('meme-coins-list');
                 container.innerHTML = memeCoins.map(coin => `
                     <div class="swiper-slide">
                         <img src="${coin.image}" alt="${coin.name}">
@@ -437,7 +437,7 @@
             try {
                 const response = await fetch('/api/news');
                 const news = await response.json();
-                const container = document.getElementById('news');
+                const container = document.getElementById('news-list');
                 container.innerHTML = news.map(item => `
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="news-card">
