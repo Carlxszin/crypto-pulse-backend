@@ -1,15 +1,12 @@
 {
-  "name": "poderosas-cripto",
-  "version": "1.0.0",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "mongoose": "^6.0.0",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^8.5.1",
-    "cors": "^2.8.5"
-  }
+    "name": "poderosas-cripto",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "vercel dev"
+    },
+    "dependencies": {
+        "mongoose": "^6.0.0",
+        "bcryptjs": "^2.4.3",
+        "jsonwebtoken": "^8.5.1"
+    }
 }
