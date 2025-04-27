@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Poderosas Cripto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: #1a1a1a;
+            --text: #fff;
+            --card-bg: linear-gradient(45deg, #2c2c2c, #3a3a3a);
+            --primary: #FF69B4;
+            --secondary: #FFC1CC;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --btn-bg: linear-gradient(45deg, #FF69B4, #FFC1CC);
+            --btn-hover: linear-gradient(45deg, #ff85c0, #ffd1dc);
+        }
+        [data-theme="light"] {
+            --background: #f5f5f5;
+            --text: #333;
+            --card-bg: linear-gradient(45deg, #e0e0e0, #f0f0f0);
+            --primary: #ff85c0;
+            --secondary: #ffd1dc;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --btn-bg: linear-gradient(45deg, #ff85c0, #ffd1dc);
+            --btn-hover: linear-gradient(45deg, #ff9ccc, #ffe4e9);
+        }
+        body {
+            background: var(--background);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .admin-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px var(--shadow);
+            margin-bottom: 20px;
+        }
+        .admin-card h2 {
+            color: var(--primary);
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            background: #333;
+            color: var(--text);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+        }
+        .form-control:focus {
+            background: #444;
+            border-color: var(--secondary);
+            box-shadow: none;
+        }
+        .btn-admin {
+            background: var(--btn-bg);
+            color: var(--text);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+        }
+        .btn-admin:hover {
+            background: var(--btn-hover);
+        }
+        .table {
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .table th, .table td {
+            border-color: var(--primary);
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+        .error-message {
+            color: #ff4444;
+            margin-top: 10px;
+            display: none;
+        }
+        @media (max-width: 576px) {
+            .admin-container { padding: 10px; }
+            .admin-card h2 { font-size: 1.4rem; }
+            .form-control { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="login-container">
+        <div class="admin-card">
+            <h2>Login Admin</h2>
+            <form id="login-form">
+                <div class="mb-3">
+                    <input type="email" class="form-control" id="email" placeholder="E-mail" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="password" placeholder="Senha" required>
+                </div>
+                <button type="submit" class="btn-admin">Entrar</button>
+                <p class="error-message" id="login-error">Credenciais inválidas</p>
+            </form>
+        </div>
+    </div>
+
+    <div class="admin-container" id="admin-panel" style="display: none;">
+        <div class="admin-card">
+            <h2>Gerenciar Meme Coins</h2>
+            <form id="meme-coin-form">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="coin-name" placeholder="Nome da Moeda" required>
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="coin-description" placeholder="Descrição" required>
+                </div>
+                <div class="mb-3">
+                    <input type="url" class="form-control" id="coin-image" placeholder="URL da Imagem" required>
+                </div>
+                <button type="submit" class="btn-admin">Adicionar</button>
+            </form>
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Imagem</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="meme-coin-list"></tbody>
+            </table>
+        </div>
+
+        <div class="admin-card">
+            <h2>Gerenciar Notícias</h2>
+            <form id="news-form">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="news-title" placeholder="Título" required>
+                </div>
+                <div class="mb-3">
+                    <textarea class="form-control" id="news-description" placeholder="Descrição" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <input type="url" class="form-control" id="news-image" placeholder="URL da Imagem" required>
+                </div>
+                <div class="mb-3">
+                    <input type="url" class="form-control" id="news-link" placeholder="Link" required>
+                </div>
+                <button type="submit" class="btn-admin">Adicionar</button>
+            </form>
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Descrição</th>
+                        <th>Imagem</th>
+                        <th>Link</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="news-list"></tbody>
+            </table>
+        </div>
+
+        <div class="admin-card">
+            <h2>Gerenciar Posts do X</h2>
+            <form id="x-post-form">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="post-author" placeholder="Autor" required>
+                </div>
+                <div class="mb-3">
+                    <textarea class="form-control" id="post-content" placeholder="Conteúdo" required></textarea>
+                </div>
+                <button type="submit" class="btn-admin">Adicionar</button>
+            </form>
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Autor</th>
+                        <th>Conteúdo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="x-post-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const loginContainer = document.getElementById('login-container');
+        const adminPanel = document.getElementById('admin-panel');
+        const loginForm = document.getElementById('login-form');
+        const memeCoinForm = document.getElementById('meme-coin-form');
+        const newsForm = document.getElementById('news-form');
+        const xPostForm = document.getElementById('x-post-form');
+        const loginError = document.getElementById('login-error');
+
+        // Verificar se já está logado
+        if (localStorage.getItem('token')) {
+            loginContainer.style.display = 'none';
+            adminPanel.style.display = 'block';
+            loadMemeCoins();
+            loadNews();
+            loadXPosts();
+        }
+
+        // Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+                const data = await response.json();
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    loginContainer.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                    loadMemeCoins();
+                    loadNews();
+                    loadXPosts();
+                } else {
+                    loginError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Erro ao fazer login:', error);
+                loginError.style.display = 'block';
+            }
+        });
+
+        // Carregar Meme Coins
+        async function loadMemeCoins() {
+            try {
+                const response = await fetch('/api/meme-coins', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                });
+                const memeCoins = await response.json();
+                const list = document.getElementById('meme-coin-list');
+                list.innerHTML = memeCoins.map(coin => `
+                    <tr>
+                        <td>${coin.name}</td>
+                        <td>${coin.description}</td>
+                        <td><img src="${coin.image}" width="50" alt="${coin.name}"></td>
+                        <td>
+                            <button class="btn-admin" onclick="editMemeCoin('${coin._id}')">Editar</button>
+                            <button class="btn-admin" onclick="deleteMemeCoin('${coin._id}')">Excluir</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar meme coins:', error);
+            }
+        }
+
+        // Adicionar Meme Coin
+        memeCoinForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('coin-name').value;
+            const description = document.getElementById('coin-description').value;
+            const image = document.getElementById('coin-image').value;
+            try {
+                await fetch('/api/meme-coins/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({ name, description, image }),
+                });
+                memeCoinForm.reset();
+                loadMemeCoins();
+            } catch (error) {
+                console.error('Erro ao adicionar meme coin:', error);
+            }
+        });
+
+        // Carregar Notícias
+        async function loadNews() {
+            try {
+                const response = await fetch('/api/news', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                });
+                const news = await response.json();
+                const list = document.getElementById('news-list');
+                list.innerHTML = news.map(item => `
+                    <tr>
+                        <td>${item.title}</td>
+                        <td>${item.description}</td>
+                        <td><img src="${item.image}" width="50" alt="${item.title}"></td>
+                        <td><a href="${item.link}">${item.link}</a></td>
+                        <td>
+                            <button class="btn-admin" onclick="editNews('${item._id}')">Editar</button>
+                            <button class="btn-admin" onclick="deleteNews('${item._id}')">Excluir</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar notícias:', error);
+            }
+        }
+
+        // Adicionar Notícia
+        newsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('news-title').value;
+            const description = document.getElementById('news-description').value;
+            const image = document.getElementById('news-image').value;
+            const link = document.getElementById('news-link').value;
+            try {
+                await fetch('/api/news/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({ title, description, image, link }),
+                });
+                newsForm.reset();
+                loadNews();
+            } catch (error) {
+                console.error('Erro ao adicionar notícia:', error);
+            }
+        });
+
+        // Carregar Posts do X
+        async function loadXPosts() {
+            try {
+                const response = await fetch('/api/x-posts', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                });
+                const posts = await response.json();
+                const list = document.getElementById('x-post-list');
+                list.innerHTML = posts.map(post => `
+                    <tr>
+                        <td>${post.author}</td>
+                        <td>${post.content}</td>
+                        <td>
+                            <button class="btn-admin" onclick="editXPost('${post._id}')">Editar</button>
+                            <button class="btn-admin" onclick="deleteXPost('${post._id}')">Excluir</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar posts do X:', error);
+            }
+        }
+
+        // Adicionar Post do X
+        xPostForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const author = document.getElementById('post-author').value;
+            const content = document.getElementById('post-content').value;
+            try {
+                await fetch('/api/x-posts/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({ author, content }),
+                });
+                xPostForm.reset();
+                loadXPosts();
+            } catch (error) {
+                console.error('Erro ao adicionar post do X:', error);
+            }
+        });
+
+        // Funções de Edição e Exclusão (Placeholder)
+        async function editMemeCoin(id) { alert(`Editar meme coin ${id}`); }
+        async function deleteMemeCoin(id) {
+            try {
+                await fetch(`/api/meme-coins/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                });
+                loadMemeCoins();
+            } catch (error) {
+                console.error('Erro ao excluir meme coin:', error);
+            }
+        }
+        async function editNews(id) { alert(`Editar notícia ${id}`); }
+        async function deleteNews(id) {
+            try {
+                await fetch(`/api/news/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                });
+                loadNews();
+            } catch (error) {
+                console.error('Erro ao excluir notícia:', error);
+            }
+        }
+        async function editXPost(id) { alert(`Editar post ${id}`); }
+        async function deleteXPost(id) {
+            try {
+                await fetch(`/api/x-posts/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                });
+                loadXPosts();
+            } catch (error) {
+                console.error('Erro ao excluir post do X:', error);
+            }
+        }
+    </script>
+</body>
+</html>
