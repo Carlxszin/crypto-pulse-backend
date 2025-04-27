@@ -1,5 +1,0 @@
-git init
-git add .
-git commit -m "Backend inicial"
-git remote add origin https://github.com/seu-usuario/crypto-pulse-backend.git
-git push origin main
