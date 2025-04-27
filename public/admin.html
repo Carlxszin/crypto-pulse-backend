@@ -86,6 +86,11 @@
             margin: 100px auto;
             text-align: center;
         }
+        .error-message {
+            color: #ff4444;
+            margin-top: 10px;
+            display: none;
+        }
         @media (max-width: 576px) {
             .admin-container { padding: 10px; }
             .admin-card h2 { font-size: 1.4rem; }
@@ -105,6 +110,7 @@
                     <input type="password" class="form-control" id="password" placeholder="Senha" required>
                 </div>
                 <button type="submit" class="btn-admin">Entrar</button>
+                <p class="error-message" id="login-error">Credenciais inválidas</p>
             </form>
         </div>
     </div>
@@ -199,6 +205,16 @@
         const memeCoinForm = document.getElementById('meme-coin-form');
         const newsForm = document.getElementById('news-form');
         const xPostForm = document.getElementById('x-post-form');
+        const loginError = document.getElementById('login-error');
+
+        // Verificar se já está logado
+        if (localStorage.getItem('token')) {
+            loginContainer.style.display = 'none';
+            adminPanel.style.display = 'block';
+            loadMemeCoins();
+            loadNews();
+            loadXPosts();
+        }
 
         // Login
         loginForm.addEventListener('submit', async (e) => {
@@ -220,10 +236,11 @@
                     loadNews();
                     loadXPosts();
                 } else {
-                    alert('Credenciais inválidas');
+                    loginError.style.display = 'block';
                 }
             } catch (error) {
                 console.error('Erro ao fazer login:', error);
+                loginError.style.display = 'block';
             }
         });
 
