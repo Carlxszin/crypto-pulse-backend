@@ -209,7 +209,7 @@
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body-unused: JSON.stringify({ email, password }),
+                    body: JSON.stringify({ email, password }),
                 });
                 const data = await response.json();
                 if (data.token) {
@@ -258,7 +258,7 @@
             const description = document.getElementById('coin-description').value;
             const image = document.getElementById('coin-image').value;
             try {
-                await fetch('/api/meme-coins', {
+                await fetch('/api/meme-coins/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -306,7 +306,7 @@
             const image = document.getElementById('news-image').value;
             const link = document.getElementById('news-link').value;
             try {
-                await fetch('/api/news', {
+                await fetch('/api/news/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -350,7 +350,7 @@
             const author = document.getElementById('post-author').value;
             const content = document.getElementById('post-content').value;
             try {
-                await fetch('/api/x-posts', {
+                await fetch('/api/x-posts/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
